@@ -42,27 +42,35 @@
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            
-            /* 🚀 关键修改在这里！🚀 */
-            /* 之前是 0.3s，现在改成 0.05s，速度提升了6倍！ */
-            transition: all 0.05s ease; 
-            
             margin: 0 10px;
             z-index: 100; 
+            /* 注意：这里把原来的 transition 删掉了，因为我们要分别设置 */
         }
+        
+        /* === Yes 按钮的样式 === */
         #yesBtn {
             background-color: #ff4d4d;
             color: white;
             box-shadow: 0 4px 6px rgba(255, 77, 77, 0.3);
+            
+            /* 💡 这里是 Yes 的速度：0.3秒 (正常呼吸感) */
+            /* 如果你真的想要超级慢动作，就把 0.3s 改成 3s */
+            transition: all 0.3s ease; 
         }
+        
         #yesBtn:hover {
             transform: scale(1.1);
             background-color: #ff3333;
         }
+
+        /* === No 按钮的样式 === */
         #noBtn {
             background-color: #e0e0e0;
             color: #333;
             position: relative; 
+            
+            /* 🚀 这里是 No 的速度：0.05秒 (极速瞬移) */
+            transition: all 0.05s ease; 
         }
     </style>
 </head>
@@ -84,9 +92,7 @@
         noBtn.addEventListener('touchstart', moveButton);
 
         function moveButton() {
-            // 限制移动范围 (单位 px)
-            // 200 代表距离中心 200px 的方形区域
-            const range = 200; 
+            const range = 200; // 移动范围
             
             const centerX = window.innerWidth / 2;
             const centerY = window.innerHeight / 2;
