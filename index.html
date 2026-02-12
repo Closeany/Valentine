@@ -42,9 +42,13 @@
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: all 0.3s ease; /* 让移动更平滑一点 */
+            
+            /* 🚀 关键修改在这里！🚀 */
+            /* 之前是 0.3s，现在改成 0.05s，速度提升了6倍！ */
+            transition: all 0.05s ease; 
+            
             margin: 0 10px;
-            z-index: 100; /* 确保按钮在最上层 */
+            z-index: 100; 
         }
         #yesBtn {
             background-color: #ff4d4d;
@@ -58,7 +62,6 @@
         #noBtn {
             background-color: #e0e0e0;
             color: #333;
-            /* 关键修改：这里删掉了 absolute，让它一开始正常显示 */
             position: relative; 
         }
     </style>
@@ -94,8 +97,6 @@
             const newLeft = centerX + randomOffsetX - (noBtn.offsetWidth / 2);
             const newTop = centerY + randomOffsetY - (noBtn.offsetHeight / 2);
 
-            // 当第一次移动时，JS 会强制把它变成 fixed
-            // 这样它就脱离文档流开始乱跑了
             noBtn.style.position = 'fixed'; 
             noBtn.style.left = newLeft + 'px';
             noBtn.style.top = newTop + 'px';
