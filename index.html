@@ -14,7 +14,7 @@
             background-color: #ffe6e6; /* 浅粉色背景 */
             font-family: 'Arial', sans-serif;
             overflow: hidden; 
-            position: relative; /* 为爱心定位做准备 */
+            position: relative; 
         }
 
         /* === 中间对话框 (层级最高) === */
@@ -25,9 +25,7 @@
             border-radius: 20px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             position: relative; 
-            
-            /* 🚀 关键点：层级设为 10，确保盖住背景的爱心 */
-            z-index: 10; 
+            z-index: 10; /* 确保盖住背景 */
         }
 
         h1 {
@@ -74,31 +72,30 @@
             transition: all 0.05s ease; /* 极速闪避 */
         }
 
-        /* === 背景爱心动画样式 === */
+        /* === 背景爱心样式 === */
         .heart-bg {
             position: absolute;
-            color: #ff9999; /* 爱心颜色 */
-            top: 100%; /* 从屏幕底部开始 */
+            color: #ff9999; 
+            top: 100%; 
             left: 0;
-            opacity: 0; /* 初始不可见 */
-            z-index: 0; /* 🚀 关键点：层级设为 0，在对话框下面 */
-            user-select: none; /*不可选中*/
-            pointer-events: none; /* 鼠标可以直接穿透爱心点到后面的东西 */
+            opacity: 0; 
+            z-index: 0; /* 在背景层 */
+            user-select: none; 
+            pointer-events: none;
         }
 
-        /* 定义飘动动画：向上 + 向右 (斜着走) */
+        /* 爱心飘动动画 */
         @keyframes floatHeart {
             0% {
                 transform: translateY(0) translateX(0) rotate(0deg);
                 opacity: 0;
             }
             10% {
-                opacity: 0.6; /* 出现 */
+                opacity: 0.8; /* 稍微调高一点不透明度，让大爱心更清晰 */
             }
             100% {
-                /* 往上移 110vh (穿过屏幕)，往右移 100px (斜向感) */
                 transform: translateY(-110vh) translateX(100px) rotate(20deg);
-                opacity: 0; /* 消失 */
+                opacity: 0; 
             }
         }
     </style>
@@ -143,37 +140,32 @@
             alert("我就知道你会答应的！爱死你了！❤️");
         });
 
-        // === 2. 背景爱心生成逻辑 ===
+        // === 2. 背景爱心生成逻辑 (已修改) ===
         function createHearts() {
-            // 每 300 毫秒生成一个爱心，你可以改小这个数字让爱心更多
             setInterval(() => {
                 const heart = document.createElement('div');
                 heart.classList.add('heart-bg');
-                heart.innerHTML = '❤'; // 你也可以改成 emoji '💖'
+                heart.innerHTML = '❤'; 
                 
-                // 随机属性
-                // 1. 随机位置 (0% 到 100% 的屏幕宽度)
                 heart.style.left = Math.random() * 100 + 'vw';
                 
-                // 2. 随机大小 (10px 到 30px)
-                const size = Math.random() * 20 + 10; 
+                // 🚀 修改点 1：让爱心变大
+                // 以前是 10~30px，现在改成 20~50px
+                const size = Math.random() * 30 + 20; 
                 heart.style.fontSize = size + 'px';
                 
-                // 3. 随机动画时长 (3秒 到 8秒)，营造有快有慢的层次感
                 const duration = Math.random() * 5 + 3;
                 heart.style.animation = `floatHeart ${duration}s linear infinite`;
                 
                 document.body.appendChild(heart);
 
-                // 动画结束后删除元素，防止网页卡顿
                 setTimeout(() => {
                     heart.remove();
                 }, duration * 1000);
 
-            }, 200); // <-- 这里的 200 是生成频率，越小爱心越密集
+            }, 100); // 🚀 修改点 2：频率变高 (100ms 生成一个，如果不满足还可以改成 50)
         }
 
-        // 启动爱心生成
         createHearts();
     </script>
 </body>
