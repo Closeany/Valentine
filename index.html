@@ -17,6 +17,7 @@
             position: relative; 
         }
 
+        /* 中间对话框 */
         .container {
             text-align: center;
             background: white;
@@ -59,10 +60,7 @@
             left: 50px;
             z-index: 101;
         }
-        #yesBtn:hover {
-            transform: scale(1.1);
-            background-color: #ff3333;
-        }
+        #yesBtn:hover { transform: scale(1.1); background-color: #ff3333; }
 
         #noBtn {
             background-color: #e0e0e0;
@@ -71,35 +69,7 @@
             right: 50px; 
         }
 
-        .heart-bg {
-            position: absolute;
-            color: #ff9999; 
-            top: 100%; 
-            left: 0;
-            opacity: 0; 
-            z-index: 0; 
-            user-select: none; 
-            pointer-events: none;
-        }
-        @keyframes floatHeart {
-            0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.8; }
-            100% { transform: translateY(-110vh) translateX(100px) rotate(20deg); opacity: 0; }
-        }
-
-        .pop-heart {
-            position: fixed; 
-            color: #d60000;  
-            font-size: 20px; 
-            pointer-events: none; 
-            z-index: 102; 
-            animation: popUp 2.0s forwards ease-out;
-        }
-        @keyframes popUp {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
-            100% { transform: translate(-50%, -80px) scale(1.2) rotate(20deg); opacity: 0; }
-        }
-
+        /* 堆积爱心的样式 */
         .falling-heart {
             position: fixed;
             color: #cc0000; 
@@ -111,16 +81,33 @@
         }
 
         @keyframes fallToStack {
-            0% {
-                top: -30vh;
-                transform: translateX(0) rotate(0deg);
-            }
-            100% {
-                top: var(--target-top); 
-                transform: translateX(var(--random-x)) rotate(var(--random-rotate));
-            }
+            0% { top: -30vh; transform: translateX(0) rotate(0deg); }
+            100% { top: var(--target-top); transform: translateX(var(--random-x)) rotate(var(--random-rotate)); }
         }
 
+        /* 背景装饰爱心 */
+        .heart-bg {
+            position: absolute;
+            color: #ff9999; 
+            top: 100%; 
+            z-index: 0; 
+            user-select: none; 
+            pointer-events: none;
+        }
+        @keyframes floatHeart {
+            0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.8; }
+            100% { transform: translateY(-110vh) translateX(100px) rotate(20deg); opacity: 0; }
+        }
+
+        /* 鼠标悬停冒泡爱心 */
+        .pop-heart {
+            position: fixed; color: #d60000; font-size: 20px; pointer-events: none; z-index: 102; animation: popUp 2.0s forwards ease-out;
+        }
+        @keyframes popUp {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+            100% { transform: translate(-50%, -80px) scale(1.2) rotate(20deg); opacity: 0; }
+        }
     </style>
 </head>
 <body>
@@ -142,6 +129,7 @@
         const yesBtnContainer = document.getElementById('yesBtnContainer'); 
         const yesBtn = document.getElementById('yesBtn');
         
+        // No 按钮闪避逻辑
         noBtn.addEventListener('mouseover', moveButton);
         noBtn.addEventListener('touchstart', moveButton);
         function moveButton() {
@@ -150,102 +138,80 @@
             const centerY = window.innerHeight / 2;
             const randomOffsetX = (Math.random() * range * 2) - range;
             const randomOffsetY = (Math.random() * range * 2) - range;
-            const newLeft = centerX + randomOffsetX - (noBtn.offsetWidth / 2);
-            const newTop = centerY + randomOffsetY - (noBtn.offsetHeight / 2);
             noBtn.style.position = 'fixed'; 
-            noBtn.style.left = newLeft + 'px';
-            noBtn.style.top = newTop + 'px';
+            noBtn.style.left = (centerX + randomOffsetX - noBtn.offsetWidth / 2) + 'px';
+            noBtn.style.top = (centerY + randomOffsetY - noBtn.offsetHeight / 2) + 'px';
             noBtn.style.right = 'auto';
             noBtn.style.bottom = 'auto';
         }
 
+        // Yes 点击后的堆积逻辑
         yesBtn.addEventListener('click', () => {
             startStackingHearts();
         });
 
         function startStackingHearts() {
-            // 初始地基依然保留 10% 悬空
-            let currentPileHeight = 10; 
+            let currentPileHeight = 10; // 初始地基
             
             const interval = setInterval(() => {
+                // 🚀 核心检查：如果达到上限，立即清除定时器并停止
+                if (document.querySelectorAll('.falling-heart').length >= 2000) {
+                     clearInterval(interval); 
+                     return; // 停止执行后续生成代码
+                }
+
                 const heart = document.createElement('div');
                 heart.classList.add('falling-heart');
                 heart.innerHTML = '❤';
-                
                 heart.style.left = Math.random() * 100 + 'vw';
-                
-                const size = Math.random() * 40 + 30; 
-                heart.style.fontSize = size + 'px';
+                heart.style.fontSize = (Math.random() * 40 + 30) + 'px';
 
-                // 🚀 核心修改：上限改为 60 (即 5分之3)
-                // 现在的雪堆只会盖过对话框一点点就停止升高
+                // 堆积高度上限 60% (5分之3)
                 if (currentPileHeight < 60) { 
                     currentPileHeight += 0.06; 
                 }
 
-                const randomOffset = Math.random() * 10 - 5; 
-                const targetTop = (100 - currentPileHeight + randomOffset);
-                
+                const targetTop = (100 - currentPileHeight + (Math.random() * 10 - 5));
                 heart.style.setProperty('--target-top', targetTop + 'vh');
-                
-                const randomRotate = Math.random() * 360 + 'deg';
-                heart.style.setProperty('--random-rotate', randomRotate);
-                
-                const randomX = (Math.random() * 20 - 10) + 'px';
-                heart.style.setProperty('--random-x', randomX);
-
-                const duration = Math.random() * 1 + 0.5;
-                heart.style.setProperty('--fall-duration', duration + 's');
+                heart.style.setProperty('--random-rotate', Math.random() * 360 + 'deg');
+                heart.style.setProperty('--random-x', (Math.random() * 20 - 10) + 'px');
+                heart.style.setProperty('--fall-duration', (Math.random() * 1 + 0.5) + 's');
 
                 document.body.appendChild(heart);
-
-                // 元素上限依然保持 2000
-                if (document.querySelectorAll('.falling-heart').length > 2000) {
-                     clearInterval(interval); 
-                }
-
             }, 20); 
         }
 
-        // 鼠标跟随爱心逻辑
+        // 鼠标跟随冒泡
         let heartInterval;
         let currentX = 0, currentY = 0;
         yesBtnContainer.addEventListener('mouseenter', (e) => {
             currentX = e.clientX; currentY = e.clientY;
             if (heartInterval) clearInterval(heartInterval);
-            createPopHeart(currentX, currentY);
-            heartInterval = setInterval(() => { createPopHeart(currentX, currentY); }, 300); 
+            heartInterval = setInterval(() => {
+                const heart = document.createElement('div');
+                heart.classList.add('pop-heart');
+                heart.innerHTML = '❤';
+                heart.style.left = currentX + 'px';
+                heart.style.top = currentY + 'px';
+                heart.style.transform = `translate(-50%, -50%) rotate(${Math.random() * 40 - 20}deg)`;
+                document.body.appendChild(heart);
+                setTimeout(() => { heart.remove(); }, 2000);
+            }, 300); 
         });
-        yesBtnContainer.addEventListener('mousemove', (e) => {
-            currentX = e.clientX; currentY = e.clientY;
-        });
-        yesBtnContainer.addEventListener('mouseleave', () => {
-            if (heartInterval) { clearInterval(heartInterval); heartInterval = null; }
-        });
+        yesBtnContainer.addEventListener('mousemove', (e) => { currentX = e.clientX; currentY = e.clientY; });
+        yesBtnContainer.addEventListener('mouseleave', () => { clearInterval(heartInterval); });
 
-        function createPopHeart(x, y) {
-            const heart = document.createElement('div');
-            heart.classList.add('pop-heart');
-            heart.innerHTML = '❤';
-            heart.style.left = x + 'px';
-            heart.style.top = y + 'px';
-            heart.style.transform = `translate(-50%, -50%) rotate(${Math.random() * 40 - 20}deg)`;
-            document.body.appendChild(heart);
-            setTimeout(() => { heart.remove(); }, 2000); 
-        }
-
+        // 背景装饰
         function createHearts() {
             setInterval(() => {
                 const heart = document.createElement('div');
                 heart.classList.add('heart-bg');
                 heart.innerHTML = '❤'; 
                 heart.style.left = Math.random() * 100 + 'vw';
-                const size = Math.random() * 30 + 20; 
-                heart.style.fontSize = size + 'px';
-                const duration = Math.random() * 5 + 3;
-                heart.style.animation = `floatHeart ${duration}s linear infinite`;
+                heart.style.fontSize = (Math.random() * 30 + 20) + 'px';
+                heart.style.animation = `floatHeart ${(Math.random() * 5 + 3)}s linear infinite`;
                 document.body.appendChild(heart);
-                setTimeout(() => { heart.remove(); }, duration * 1000);
+                setTimeout(() => { heart.remove(); }, 8000);
             }, 100); 
         }
         createHearts();
