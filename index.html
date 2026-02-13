@@ -112,7 +112,6 @@
             pointer-events: none; 
             top: -10vh; 
             animation: fallToStack var(--fall-duration) linear forwards;
-            /* 增加一点阴影，让堆积更有层次感 */
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
 
@@ -123,7 +122,6 @@
             }
             100% {
                 top: var(--target-top); 
-                /* 下落时稍微有点横向偏移，更自然 */
                 transform: translateX(var(--random-x)) rotate(var(--random-rotate));
             }
         }
@@ -170,51 +168,59 @@
             startStackingHearts();
         });
 
-        // === 🚀 优化的堆积逻辑 ===
+        // === 🚀 核心逻辑：超高密度堆积 ===
         function startStackingHearts() {
             let currentPileHeight = 0; 
             
             const interval = setInterval(() => {
-                const heart = document.createElement('div');
-                heart.classList.add('falling-heart');
-                heart.innerHTML = '❤';
                 
-                heart.style.left = Math.random() * 100 + 'vw';
-                
-                // 🚀 修改1：爱心变大了！ (30px 到 60px)
-                // 以前是 15-35，现在大了一倍，填充效率更高
-                const size = Math.random() * 30 + 30; 
-                heart.style.fontSize = size + 'px';
+                // 🚀 暴力修改1：每次循环生成 3 个爱心！(三倍快乐)
+                for(let i=0; i<3; i++) {
+                    const heart = document.createElement('div');
+                    heart.classList.add('falling-heart');
+                    heart.innerHTML = '❤';
+                    
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    
+                    // 保持大尺寸 (30-60px) 以便快速填满
+                    const size = Math.random() * 30 + 30; 
+                    heart.style.fontSize = size + 'px';
 
-                // 🚀 修改2：上涨速度变极慢
-                // 0.03 意味着要在当前高度生成很多个爱心，才会向上涨 1vh
-                // 这样每一层都会铺得非常满
-                if (currentPileHeight < 70) {
-                    currentPileHeight += 0.03; 
+                    // 🚀 暴力修改2：堆积上涨速度降到 0.01 (极慢)
+                    // 这意味着要在原地堆几十个爱心，水位线才会往上涨 1%
+                    if (currentPileHeight < 90) { // 允许堆得更高
+                        currentPileHeight += 0.01; 
+                    }
+
+                    // 增加落点随机性，让堆积面更不规则
+                    const randomOffset = Math.random() * 10 - 5; 
+                    const targetTop = (100 - currentPileHeight + randomOffset);
+                    
+                    heart.style.setProperty('--target-top', targetTop + 'vh');
+                    
+                    // 随机旋转
+                    const randomRotate = Math.random() * 360 + 'deg';
+                    heart.style.setProperty('--random-rotate', randomRotate);
+                    
+                    // 随机偏移
+                    const randomX = (Math.random() * 20 - 10) + 'px';
+                    heart.style.setProperty('--random-x', randomX);
+
+                    // 下落速度
+                    const duration = Math.random() * 1 + 0.5;
+                    heart.style.setProperty('--fall-duration', duration + 's');
+
+                    document.body.appendChild(heart);
                 }
 
-                const randomOffset = Math.random() * 10 - 5; 
-                const targetTop = (100 - currentPileHeight + randomOffset);
-                
-                heart.style.setProperty('--target-top', targetTop + 'vh');
-                
-                const randomRotate = Math.random() * 360 + 'deg';
-                heart.style.setProperty('--random-rotate', randomRotate);
-                
-                // 增加一点随机横向偏移，让堆积看起来不那么生硬
-                const randomX = (Math.random() * 20 - 10) + 'px';
-                heart.style.setProperty('--random-x', randomX);
-
-                const duration = Math.random() * 1 + 0.5;
-                heart.style.setProperty('--fall-duration', duration + 's');
-
-                document.body.appendChild(heart);
-
-                if (document.querySelectorAll('.falling-heart').length > 5000) {
+                // 元素过多清理逻辑
+                // 因为生成速度太快，我们稍微放宽一点上限
+                if (document.querySelectorAll('.falling-heart').length > 6000) {
+                     // 到了 6000 个就不再生成了，不然浏览器会卡死
                      clearInterval(interval); 
                 }
 
-            }, 5); // 🚀 修改3：生成速度极快 (5ms 一个)
+            }, 5); // 🚀 保持 5ms 的极速频率
         }
 
         // 鼠标跟随爱心逻辑
