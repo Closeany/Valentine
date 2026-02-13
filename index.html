@@ -110,31 +110,28 @@
             100% { top: 110vh; transform: translateX(var(--random-x)) rotate(var(--random-rotate)); opacity: 0; } 
         }
 
-        /* 🚀 组成巨大爱心的小粒子 (修改了动画参数) */
+        /* 组成巨大爱心的小粒子 */
         .shape-heart {
             position: fixed;
             color: #ff0000;
             font-size: 25px;
             pointer-events: none;
             z-index: 1000; 
-            /* 缩短动画时间到 2.5s，使用 ease-out 让扩散更有冲力 */
             animation: burstHeart 2.5s forwards ease-out; 
             text-shadow: 0 0 15px rgba(255, 0, 0, 0.6); 
         }
 
-        /* 🚀 新的大爱心动画：向外扩散消失 */
         @keyframes burstHeart {
             0% {
                 opacity: 0;
-                transform: translate(-50%, -50%) scale(0.5); /* 初始很小 */
+                transform: translate(-50%, -50%) scale(0.5); 
             }
             10% {
-                opacity: 1; /* 快速显现 */
-                transform: translate(-50%, -50%) scale(1); /* 回到正常大小 */
+                opacity: 1; 
+                transform: translate(-50%, -50%) scale(1); 
             }
             100% {
-                opacity: 0; /* 最后消失 */
-                /* 🚀 关键：扩散到 4 倍大小，形成向外爆开的效果 */
+                opacity: 0; 
                 transform: translate(-50%, -50%) scale(4.0); 
             }
         }
@@ -145,7 +142,7 @@
     <div id="hearts-container"></div>
 
     <div class="container">
-        <h1 id="mainTitle">Are u my valentine? 💖</h1>
+        <h1 id="mainTitle">要一直做我的小狗吗 🐶</h1>
         <div class="btn-group" id="btnGroup">
             <div id="yesBtnContainer" style="position: absolute; left: 50px; bottom: 0;">
                  <button id="yesBtn" style="position: relative; left: auto; bottom: auto;">Yes! 😍</button>
@@ -183,7 +180,6 @@
             
             startFallingHearts();
 
-            // 🚀 关键修改：提前到 8 秒 (9.5 - 1.5 = 8)
             setTimeout(() => {
                 createBigHeart();
             }, 8000); 
@@ -218,7 +214,6 @@
         function createBigHeart() {
             const centerX = window.innerWidth / 2;
             const centerY = window.innerHeight / 2;
-            // 🚀 修改：尺寸缩小到 15
             const scale = 15; 
             const particles = 100; 
             
@@ -238,7 +233,6 @@
 
                 document.body.appendChild(heart);
 
-                // 🚀 清理时间同步缩短到 3秒 (动画是2.5s)
                 setTimeout(() => {
                     heart.remove();
                 }, 3000); 
