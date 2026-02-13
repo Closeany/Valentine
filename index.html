@@ -71,7 +71,6 @@
             right: 50px; 
         }
 
-        /* === 背景淡爱心 === */
         .heart-bg {
             position: absolute;
             color: #ff9999; 
@@ -88,7 +87,6 @@
             100% { transform: translateY(-110vh) translateX(100px) rotate(20deg); opacity: 0; }
         }
 
-        /* === 鼠标跟随小气泡 === */
         .pop-heart {
             position: fixed; 
             color: #d60000;  
@@ -102,13 +100,11 @@
             100% { transform: translate(-50%, -80px) scale(1.2) rotate(20deg); opacity: 0; }
         }
 
-        /* === 堆积的深色爱心 === */
         .falling-heart {
             position: fixed;
             color: #cc0000; 
             z-index: 999; 
             pointer-events: none; 
-            /* 依然保持高空坠落 */
             top: -30vh; 
             animation: fallToStack var(--fall-duration) linear forwards;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
@@ -168,10 +164,7 @@
         });
 
         function startStackingHearts() {
-            
-            // 🚀 关键修改：初始高度设为 10
-            // 0 代表最底端。10 代表离底端还有 10% 的距离（大约悬空 10vh）
-            // 这样爱心就会从稍微高一点的“虚空地板”开始堆积
+            // 初始地基依然保留 10% 悬空
             let currentPileHeight = 10; 
             
             const interval = setInterval(() => {
@@ -184,8 +177,9 @@
                 const size = Math.random() * 40 + 30; 
                 heart.style.fontSize = size + 'px';
 
-                // 堆积速度 0.06 (爽快版)
-                if (currentPileHeight < 90) { 
+                // 🚀 核心修改：上限改为 60 (即 5分之3)
+                // 现在的雪堆只会盖过对话框一点点就停止升高
+                if (currentPileHeight < 60) { 
                     currentPileHeight += 0.06; 
                 }
 
@@ -205,6 +199,7 @@
 
                 document.body.appendChild(heart);
 
+                // 元素上限依然保持 2000
                 if (document.querySelectorAll('.falling-heart').length > 2000) {
                      clearInterval(interval); 
                 }
@@ -239,7 +234,6 @@
             setTimeout(() => { heart.remove(); }, 2000); 
         }
 
-        // 背景淡爱心逻辑
         function createHearts() {
             setInterval(() => {
                 const heart = document.createElement('div');
