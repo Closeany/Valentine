@@ -98,8 +98,8 @@
             pointer-events: none; 
             z-index: 102; 
             
-            /* 🚀 修改1：时间改长到 1.5s，让它有时间飘上去 */
-            animation: popUp 1.5s forwards ease-out;
+            /* 🚀 修改1：时间调回 1.0s，更干脆 */
+            animation: popUp 1.0s forwards ease-out;
         }
 
         @keyframes popUp {
@@ -108,8 +108,8 @@
                 opacity: 1;
             }
             100% {
-                 /* 🚀 修改2：距离改成 -300px，飘得非常高！ */
-                transform: translate(-50%, -300px) scale(1.2) rotate(20deg);
+                 /* 🚀 修改2：距离改成 -150px (之前是 -300px) */
+                transform: translate(-50%, -150px) scale(1.2) rotate(20deg);
                 opacity: 0;
             }
         }
@@ -173,7 +173,9 @@
             heart.style.top = y + 'px';
             heart.style.transform = `translate(-50%, -50%) rotate(${Math.random() * 40 - 20}deg)`;
             document.body.appendChild(heart);
-            setTimeout(() => { heart.remove(); }, 1500); // 记得这里也要改成 1500ms (1.5s)
+            
+            // 🚀 修改3：JS清理时间也要同步改成 1000ms
+            setTimeout(() => { heart.remove(); }, 1000); 
         }
 
         // 背景淡爱心逻辑
